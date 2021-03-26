@@ -1,9 +1,9 @@
 import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-import PopularFilms from ".pages/PopularFilms"
-import SearchedFilms from ".pages/SearchedFilms"
-import LikedFilms from ".pages/LikedFilms"
-import FilmPage from ".pages/FilmPage"
+import PopularFilms from "./pages/PopularFilms"
+import {SearchedFilms} from "./pages/SearchedFilms"
+import {LikedFilms} from "./pages/LikedFilms"
+import {FilmPage} from "./pages/FilmPage"
 
 
 
