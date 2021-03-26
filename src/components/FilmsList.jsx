@@ -1,38 +1,68 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import axios from "axios";
 import { Container, Grid, Paper, makeStyles } from "@material-ui/core";
-import FilmCard from "./FilmCard"
+import FilmCard from "./FilmCard";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    margin: "1rem auto",
-    maxWidth: 1280,
-    justifyContent: "center"
-    
+export const FilmsList = (url) => {
+  const [films, setFilms] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [fetching, setFetching] = useState(true);
 
-  },
-  paper: {
-    height: "15rem",
-    width: "13rem",
-    backgroundColor: 'blue'
-  },
-  control: {
-    padding: theme.spacing(2),
-  },
-}));
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      flexGrow: 1,
+      margin: "1rem auto",
+      maxWidth: 1280,
+      justifyContent: "center",
+    },
+    paper: {
+      height: "15rem",
+      width: "13rem",
+      backgroundColor: "blue",
+    },
+    control: {
+      padding: theme.spacing(2),
+    },
+  }));
 
-export const FilmsList = (films) => {
-    const [spacing, setSpacing] = React.useState(2);
-    const classes = useStyles();
+  useEffect(() => {
+    if (fetching) {
+      axios
+        .get(url.url + "&page=" + currentPage)
+        .then((response) => {
+          setFilms([...films, ...response.data.results]);
+          setCurrentPage((prevState) => prevState + 1);
+        })
+        .finally(() => setFetching(false));
+    }
+  }, [fetching]);
+
+  useEffect(() => {
+    document.addEventListener("scroll", scrollHandler);
+    return function () {
+      document.removeEventListener("scroll", scrollHandler);
+    };
+  }, []);
+
+  const scrollHandler = (event) => {
+    if (
+      event.target.documentElement.scrollHeight -
+        (event.target.documentElement.scrollTop + window.innerHeight) <
+      100
+    ) {
+      setFetching(true);
+    }
+  };
+  const [spacing, setSpacing] = React.useState(2);
+  const classes = useStyles();
 
   return (
     <Grid container className={classes.root} spacing={2}>
       <Grid item xs={12}>
         <Grid container justify="center" spacing={spacing}>
-          {films.films.map((film) => (
+          {films.map((film) => (
             <Grid key={film.id} item>
-              <FilmCard film ={film}></FilmCard>
+              <FilmCard film={film}></FilmCard>
             </Grid>
           ))}
         </Grid>
