@@ -1,6 +1,6 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Container, Grid, Paper, makeStyles } from "@material-ui/core";
+import { Grid, makeStyles } from "@material-ui/core";
 import FilmCard from "./FilmCard";
 
 export const FilmsList = (url) => {
@@ -33,6 +33,9 @@ export const FilmsList = (url) => {
           setFilms([...films, ...response.data.results]);
           setCurrentPage((prevState) => prevState + 1);
         })
+        .catch((e) => {
+          console.log(e);
+        })
         .finally(() => setFetching(false));
     }
   }, [fetching]);
@@ -55,13 +58,12 @@ export const FilmsList = (url) => {
   };
   const [spacing, setSpacing] = React.useState(2);
   const classes = useStyles();
-
   return (
     <Grid container className={classes.root} spacing={2}>
       <Grid item xs={12}>
         <Grid container justify="center" spacing={spacing}>
           {films.map((film) => (
-            <Grid key={film.id} item>
+            <Grid  item>
               <FilmCard film={film}></FilmCard>
             </Grid>
           ))}
