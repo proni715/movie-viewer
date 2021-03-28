@@ -36,8 +36,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function FilmPoster(props) {
+  const { film, isLiked } = props;
+  console.log(isLiked)
   const classes = useStyles();
-  const { film } = props;
+  let liked = JSON.parse(localStorage.getItem("liked"));
+
+  const handleLike = () => {
+    liked = JSON.parse(localStorage.getItem("liked"));
+    if (!isLiked) {
+      liked.push(film.film);
+      localStorage.setItem("liked", JSON.stringify(liked));
+      isLiked = true;
+    }
+    console.log(isLiked);
+    console.log(liked);
+  };
+
   return (
     <Paper
       className={classes.mainFeaturedPost}
@@ -60,16 +74,24 @@ export default function FilmPoster(props) {
               {film.title}
             </Typography>
             {film.genres ? (
-              <Typography variant="body2" color="inherit" component="p">
+              <Typography color="inherit" component="p">
                 {film.genres.map((genre) => genre.name + " ")}
               </Typography>
             ) : null}
           </div>
         </Grid>
       </Grid>
-      <Button size="large" color="inherit">
-        <FavoriteBorder></FavoriteBorder>
-      </Button>
+      <Typography style={{ marginLeft: "3%" }} color="inherit" component="p">
+        {film.tagline}
+      </Typography>
+      <Typography style={{ marginLeft: "3%" }} color="inherit" component="p">
+        {film.status} {film.release_date}
+      </Typography>
+      {isLiked ? null : (
+        <Button size="large" color="inherit">
+          <FavoriteBorder></FavoriteBorder>
+        </Button>
+      )}
     </Paper>
   );
 }

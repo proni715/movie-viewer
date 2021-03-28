@@ -20,9 +20,7 @@ class PopularFilms extends Component {
       )
       .then((response) => {
         this.setState({ genres: response.data.genres });
-        localStorage.setItem('genres', JSON.stringify(response.data.genres));
-        // localStorage.setItem('genres', response.data.genres);
-        // console.log(response.data.genres);
+        localStorage.setItem("genres", JSON.stringify(response.data.genres));
       })
       .catch((error) => {
         console.log(error);

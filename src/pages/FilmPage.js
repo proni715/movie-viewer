@@ -5,6 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import FilmPoster from "../components/FilmPoster";
 import Urls from "../Urls";
+import FilmsList from "../components/FilmsList";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,8 +21,20 @@ export const FilmPage = (props) => {
   const { id } = props.match.params;
   const [film, setFilm] = useState({});
   const [loading, setLoading] = useState(true);
+  const [isLiked, setIsLiked] = useState(false);
+  let liked = JSON.parse(localStorage.getItem("liked"));
   const finalGenres = film.genres;
+
+
   useEffect(() => {
+    if (!liked) {
+      localStorage.setItem("liked", JSON.stringify([{ id: 0 }]));
+    }
+    for (let i = 0; i < liked.length; i++) {
+      if (liked[i].id === id) {
+        setIsLiked(true);
+      }
+    }
     if (loading) {
       axios
         .get(Urls({ request: "film", param: id }))
@@ -39,14 +52,27 @@ export const FilmPage = (props) => {
     <>
       <Navbar></Navbar>
       <main className={classes.root}>
-        <FilmPoster film={film}></FilmPoster>
-        <Typography gutterBottom variant="h5" component="h2">
+        <FilmPoster film={film} isLiked = {isLiked}></FilmPoster>
+        <Typography
+          style={{ margin: "2%" }}
+          gutterBottom
+          variant="h5"
+          component="h2"
+        >
           {film.title}
         </Typography>
 
-        <Typography variant="body2" color="textSecondary" component="p">
+        <Typography
+          style={{ margin: "2%" }}
+          variant="body2"
+          color="textSecondary"
+          component="p"
+        >
           {film.overview}
         </Typography>
+        <FilmsList
+          url={Urls({ request: "recomendations", param: id })}
+        ></FilmsList>
       </main>
     </>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
@@ -31,17 +31,50 @@ const useStyles = makeStyles({
 export default function FIlmCard(film) {
   const classes = useStyles();
   const genres = JSON.parse(localStorage.getItem("genres"));
+  const [loading, setLoading] = useState(true);
+  const [isLiked, setIsLiked] = useState(false);
+  let liked = JSON.parse(localStorage.getItem("liked"));
   let finalGenres = [];
-  for (let i = 0; i < genres.length; i++) {
-    for (let j = 0; j < film.film.genre_ids.length; j++) {
-      if (genres[i].id === film.film.genre_ids[j]) {
-        finalGenres.push(genres[i].name);
+
+  useEffect(() => {
+    if (!liked) {
+      localStorage.setItem("liked", JSON.stringify([{ id: 0 }]));
+    }
+    for (let i = 0; i < liked.length; i++) {
+      if (liked[i].id === film.film.id) {
+        setIsLiked(true);
       }
     }
-  }
+    if (loading) {
+      for (let i = 0; i < genres.length; i++) {
+        for (let j = 0; j < film.film.genre_ids.length; j++) {
+          if (genres[i].id === film.film.genre_ids[j]) {
+            finalGenres.push(genres[i].name);
+          }
+        }
+      }
+      console.log("isLiked:" + film.film.title, isLiked);
+      setLoading(false);
+    }
+  }, [loading]);
+
+  const handleLike = () => {
+    liked = JSON.parse(localStorage.getItem("liked"));
+    if (!isLiked) {
+      liked.push(film.film);
+      localStorage.setItem("liked", JSON.stringify(liked));
+      setIsLiked(true);
+    }
+    console.log(isLiked);
+    console.log(liked);
+  };
+  const handleOpen = () => {
+    document.location.href = "/films/" + film.film.id;
+    console.log(film.film.id);
+  };
   return (
     <Card className={classes.root}>
-      <CardActionArea>
+      <CardActionArea onClick={handleOpen}>
         <CardMedia
           component="img"
           alt="Contemplative Reptile"
@@ -69,10 +102,12 @@ export default function FIlmCard(film) {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Button size="small" color="primary">
-          <FavoriteBorder></FavoriteBorder>
-        </Button>
-        <Button size="small" color="primary">
+        {isLiked ? null : (
+          <Button onClick={handleLike} size="small" color="primary">
+            <FavoriteBorder></FavoriteBorder>
+          </Button>
+        )}
+        <Button onClick={handleOpen} size="small" color="primary">
           Learn More
         </Button>
         <Typography

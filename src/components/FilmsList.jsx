@@ -56,14 +56,14 @@ export const FilmsList = (url) => {
       setFetching(true);
     }
   };
-  const [spacing, setSpacing] = React.useState(2);
+  const [spacing, setSpacing] = useState(2);
   const classes = useStyles();
   return (
     <Grid container className={classes.root} spacing={2}>
       <Grid item xs={12}>
         <Grid container justify="center" spacing={spacing}>
           {films.map((film) => (
-            <Grid  item>
+            <Grid item>
               <FilmCard film={film}></FilmCard>
             </Grid>
           ))}

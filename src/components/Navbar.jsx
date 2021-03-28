@@ -12,13 +12,13 @@ import {
 import MenuIcon from "@material-ui/icons/Menu";
 import { makeStyles } from "@material-ui/core/styles";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import FilmPage from "../pages/FilmPage"
+import FilmPage from "../pages/FilmPage";
 import Urls from "../Urls";
 import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   autocomplete: {
-    minWidth: 344,
+    minWidth: "30%",
   },
   appBar: {
     position: "relative",
@@ -52,9 +52,13 @@ const Navbar = (props) => {
       film = films.find((film) => film.title === e.target.value);
     }
     if (film) {
-      document.location.href='/films/'+film.id
+      document.location.href = "/films/" + film.id;
       console.log(film.id);
     }
+  };
+
+  const handlePopular = () => {
+    document.location.href = "/films/";
   };
 
   const handleClose = () => {
@@ -97,8 +101,8 @@ const Navbar = (props) => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            <MenuItem onClick={handleClose}>Popular films</MenuItem>
-            <MenuItem onClick={handleClose}>Liked films</MenuItem>
+            <MenuItem onClick={handlePopular}>Popular films</MenuItem>
+            <MenuItem>Liked films</MenuItem>
           </Menu>
           <Typography variant="h6" className={classes.title}>
             Movie Viewer

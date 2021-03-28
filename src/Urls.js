@@ -14,6 +14,6 @@ export default function Urls({ request, param }) {
       return baseUrl + "/movie/" + param + key;
 
     case "recomendations":
-      return baseUrl + "/movie/" + param + "/recomendations" + key;
+      return baseUrl + "/movie/" + param + "/recommendations" + key;
   }
 };
