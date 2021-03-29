@@ -6,7 +6,7 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Button from "@material-ui/core/Button";
-import { FavoriteBorder } from "@material-ui/icons";
+import { FavoriteBorder, Favorite } from "@material-ui/icons";
 import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles({
@@ -58,6 +58,17 @@ export default function FIlmCard(film) {
     }
   }, [loading]);
 
+  const handleUnlike = () => {
+    liked = JSON.parse(localStorage.getItem("liked"));
+    for (let i = 0; i < liked.length; i++) {
+      if (liked[i].id===film.film.id) {
+        liked.splice(i, 1);
+        setIsLiked(false)
+      }
+    }
+    localStorage.setItem("liked", JSON.stringify(liked));
+    console.log(JSON.parse(localStorage.getItem("liked")));
+  };
   const handleLike = () => {
     liked = JSON.parse(localStorage.getItem("liked"));
     if (!isLiked) {
@@ -102,7 +113,11 @@ export default function FIlmCard(film) {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        {isLiked ? null : (
+        {isLiked ? (
+          <Button onClick={handleUnlike} size="small" color="primary">
+            <Favorite></Favorite>
+          </Button>
+        ) : (
           <Button onClick={handleLike} size="small" color="primary">
             <FavoriteBorder></FavoriteBorder>
           </Button>

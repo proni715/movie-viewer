@@ -60,6 +60,9 @@ const Navbar = (props) => {
   const handlePopular = () => {
     document.location.href = "/films/";
   };
+  const handleLiked = () => {
+    document.location.href = "/liked/";
+  };
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -102,7 +105,7 @@ const Navbar = (props) => {
             onClose={handleClose}
           >
             <MenuItem onClick={handlePopular}>Popular films</MenuItem>
-            <MenuItem>Liked films</MenuItem>
+            <MenuItem onClick={handleLiked}>Liked films</MenuItem>
           </Menu>
           <Typography variant="h6" className={classes.title}>
             Movie Viewer
