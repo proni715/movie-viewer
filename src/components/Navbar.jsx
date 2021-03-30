@@ -3,44 +3,39 @@ import {
   AppBar,
   Container,
   Toolbar,
-  IconButton,
+  Button,
   Typography,
   TextField,
-  Menu,
-  MenuItem,
 } from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
 import { makeStyles } from "@material-ui/core/styles";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import FilmPage from "../pages/FilmPage";
 import Urls from "../Urls";
 import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   autocomplete: {
-    minWidth: "30%",
+    width: "20vw",
+    borderColor:'#424242',
   },
   appBar: {
     position: "relative",
+    backgroundColor: "#424242",
   },
   title: {
     flexGrow: 1,
   },
   field: {
+    margin: "0",
     backgroundColor: "white",
+    borderColor:'#424242',
     borderRadius: "5px",
-    marginRight: theme.spacing(1),
   },
 }));
 
-const Navbar = (props) => {
+export const Navbar = (props) => {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [films, setFilms] = useState([]);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
 
   const handleChange = (e) => {
     setSearchValue(e.target.value);
@@ -53,7 +48,6 @@ const Navbar = (props) => {
     }
     if (film) {
       document.location.href = "/films/" + film.id;
-      console.log(film.id);
     }
   };
 
@@ -64,52 +58,30 @@ const Navbar = (props) => {
     document.location.href = "/liked/";
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   useEffect(() => {
     let url = Urls({ request: "search", param: searchValue });
-    let cancel;
     axios({
       method: "GET",
       url: url,
-      cancelToken: new axios.CancelToken((c) => (cancel = c)),
     })
       .then((response) => {
         setFilms(response.data.results);
       })
-      .catch((e) => {
-        if (axios.isCancel(e)) return;
-      });
-    return () => cancel();
+      .catch((e) => {});
   }, [searchValue]);
 
   return (
     <AppBar className={classes.appBar}>
       <Container>
         <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            onClick={handleClick}
-          >
-            <MenuIcon></MenuIcon>
-          </IconButton>
-          <Menu
-            id="simple-menu"
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
-            <MenuItem onClick={handlePopular}>Popular films</MenuItem>
-            <MenuItem onClick={handleLiked}>Liked films</MenuItem>
-          </Menu>
-          <Typography variant="h6" className={classes.title}>
-            Movie Viewer
-          </Typography>
+          <div className={classes.title}>
+            <Button onClick={handlePopular} color="inherit">
+              <Typography variant="h6">Movie Viewer</Typography>
+            </Button>
+          </div>
+          <Button onClick={handleLiked} color="inherit">
+            <Typography variant="h6">Liked</Typography>
+          </Button>
           <Autocomplete
             className={classes.autocomplete}
             freeSolo
@@ -118,8 +90,8 @@ const Navbar = (props) => {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="freeSolo"
-                margin="normal"
+                label="Search"
+                // margin="normal"
                 variant="outlined"
                 className={classes.field}
                 onChange={handleChange}

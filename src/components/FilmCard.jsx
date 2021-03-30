@@ -11,6 +11,7 @@ import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles({
   root: {
+    margin: "1rem",
     maxWidth: 345,
     minWidth: 344,
     minHeight: 300,
@@ -28,60 +29,58 @@ const useStyles = makeStyles({
   },
 });
 
-export default function FIlmCard(film) {
+export const FilmCard = ({ film, genres }) => {
   const classes = useStyles();
-  const genres = JSON.parse(localStorage.getItem("genres"));
   const [loading, setLoading] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
-  let liked = JSON.parse(localStorage.getItem("liked"));
-  let finalGenres = [];
-
-  useEffect(() => {
-    if (!liked) {
-      localStorage.setItem("liked", JSON.stringify([{ id: 0 }]));
-    }
-    for (let i = 0; i < liked.length; i++) {
-      if (liked[i].id === film.film.id) {
-        setIsLiked(true);
-      }
-    }
-    if (loading) {
+  const [genresList, setGenres] = useState([]);
+  useEffect(async () => {
+    let finalGenres = new Array();
+    if (genres) {
       for (let i = 0; i < genres.length; i++) {
-        for (let j = 0; j < film.film.genre_ids.length; j++) {
-          if (genres[i].id === film.film.genre_ids[j]) {
+        for (let j = 0; j < film.genre_ids.length; j++) {
+          if (genres[i].id === film.genre_ids[j]) {
             finalGenres.push(genres[i].name);
           }
         }
       }
-      console.log("isLiked:" + film.film.title, isLiked);
-      setLoading(false);
     }
+    setGenres(finalGenres);
+    const liked = await JSON.parse(localStorage.getItem("liked"));
+    if (liked) {
+      for (let i = 0; i < liked.length; i++) {
+        if (liked[i].id === film.id) {
+          setIsLiked(true);
+          break;
+        }
+      }
+    }
+    setLoading(false);
   }, [loading]);
 
   const handleUnlike = () => {
-    liked = JSON.parse(localStorage.getItem("liked"));
+    let liked = JSON.parse(localStorage.getItem("liked"));
     for (let i = 0; i < liked.length; i++) {
-      if (liked[i].id===film.film.id) {
+      if (liked[i].id === film.id) {
         liked.splice(i, 1);
-        setIsLiked(false)
+        localStorage.setItem("liked", JSON.stringify(liked));
+        setIsLiked(false);
+        break;
       }
     }
-    localStorage.setItem("liked", JSON.stringify(liked));
-    console.log(JSON.parse(localStorage.getItem("liked")));
   };
   const handleLike = () => {
-    liked = JSON.parse(localStorage.getItem("liked"));
-    if (!isLiked) {
-      liked.push(film.film);
-      localStorage.setItem("liked", JSON.stringify(liked));
-      setIsLiked(true);
+    let liked = JSON.parse(localStorage.getItem("liked"));
+    if (liked) {
+      liked.push(film);
+    } else {
+      liked = [film];
     }
-    console.log(isLiked);
-    console.log(liked);
+    localStorage.setItem("liked", JSON.stringify(liked));
+    setIsLiked(true);
   };
   const handleOpen = () => {
-    document.location.href = "/films/" + film.film.id;
-    console.log(film.film.id);
+    document.location.href = "/films/" + film.id;
   };
   return (
     <Card className={classes.root}>
@@ -90,7 +89,7 @@ export default function FIlmCard(film) {
           component="img"
           alt="Contemplative Reptile"
           height="140"
-          image={"https://image.tmdb.org/t/p/w500" + film.film.poster_path}
+          image={"https://image.tmdb.org/t/p/w500" + film.poster_path}
           title="Contemplative Reptile"
         />
         <CardContent>
@@ -100,7 +99,7 @@ export default function FIlmCard(film) {
             variant="h5"
             component="h2"
           >
-            {film.film.title}
+            {film.title}
           </Typography>
           <Typography
             className={classes.description}
@@ -108,32 +107,30 @@ export default function FIlmCard(film) {
             color="textSecondary"
             component="p"
           >
-            {film.film.overview}
+            {film.overview}
           </Typography>
         </CardContent>
       </CardActionArea>
       <CardActions>
         {isLiked ? (
-          <Button onClick={handleUnlike} size="small" color="primary">
+          <Button onClick={handleUnlike} size="small" color="#424242">
             <Favorite></Favorite>
           </Button>
         ) : (
-          <Button onClick={handleLike} size="small" color="primary">
+          <Button onClick={handleLike} size="small" color="#424242">
             <FavoriteBorder></FavoriteBorder>
           </Button>
         )}
-        <Button onClick={handleOpen} size="small" color="primary">
-          Learn More
-        </Button>
         <Typography
           className={classes.description}
           variant="body2"
-          color="primary"
+          color="#424242"
           component="p"
         >
-          {finalGenres.map((genre) => genre + " ")}
+          {genres ? genresList.map((genre) => genre + " ") : null}
         </Typography>
       </CardActions>
     </Card>
   );
-}
+};
+export default FilmCard;

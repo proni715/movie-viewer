@@ -3,10 +3,11 @@ import axios from "axios";
 import { Grid, makeStyles } from "@material-ui/core";
 import FilmCard from "./FilmCard";
 
-export const FilmsList = (url) => {
+export const FilmsList = ({ url, limit }) => {
   const [films, setFilms] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [fetching, setFetching] = useState(true);
+  const [genres, setGenres] = useState([]);
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -25,10 +26,20 @@ export const FilmsList = (url) => {
     },
   }));
 
-  useEffect(() => {
+  useEffect(async () => {
+    await axios
+      .get(
+        "https://api.themoviedb.org/3/genre/movie/list?api_key=339c5b0853bccc574e98f7edf445813d"
+      )
+      .then((response) => {
+        setGenres(response.data.genres);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
     if (fetching) {
-      axios
-        .get(url.url + "&page=" + currentPage)
+      await axios
+        .get(url + "&page=" + currentPage)
         .then((response) => {
           setFilms([...films, ...response.data.results]);
           setCurrentPage((prevState) => prevState + 1);
@@ -37,6 +48,9 @@ export const FilmsList = (url) => {
           console.log(e);
         })
         .finally(() => setFetching(false));
+    }
+    if (limit) {
+      setFilms(films.slice(0, 6));
     }
   }, [fetching]);
 
@@ -56,15 +70,14 @@ export const FilmsList = (url) => {
       setFetching(true);
     }
   };
-  const [spacing, setSpacing] = useState(2);
   const classes = useStyles();
   return (
-    <Grid container className={classes.root} spacing={2}>
+    <Grid container className={classes.root}>
       <Grid item xs={12}>
-        <Grid container justify="center" spacing={spacing}>
+        <Grid container justify="center">
           {films.map((film) => (
-            <Grid item>
-              <FilmCard film={film}></FilmCard>
+            <Grid key={film.id + ""} item>
+              <FilmCard film={film} genres={genres}></FilmCard>
             </Grid>
           ))}
         </Grid>
