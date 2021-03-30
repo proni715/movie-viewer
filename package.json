@@ -10,6 +10,7 @@
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.3",
     "axios": "^0.21.1",
+    "js-cookie": "^2.2.1",
     "materialize-css": "^1.0.0-rc.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -19,7 +20,7 @@
     "web-vitals": "^1.1.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "node server.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -41,5 +42,22 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "description": "- Список популярних фільмів організував з використанням динамічного підвантаження  - Пошук знаходиться в навбарі, організований текстовим полем з випадним меню, куди підвантажуються дані з API  - Списки жанрів виводяться на кожній карточці фільму, та на сторінці з детальною інформацією про фільм  - На сторінці з фільмом виводяться 6 або менше рекомендованих до нього фільмів (залежить від того, що пришле API)  - Додавання в обране організовано через localStorage на кожній картці фільму та на сторінці з детальною інформацією до фільму.  - Біля пошуку знаходиться кнопча, через яку можна відобразити список обраних фільмів  - Також додав на сторінку з фільмом його трейлер",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.13.14",
+    "@babel/preset-env": "^7.13.12",
+    "@babel/preset-react": "^7.13.13",
+    "babel-loader": "^8.1.0",
+    "express": "^4.17.1",
+    "express-favicon": "^2.0.1",
+    "path": "^0.12.7",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^4.6.0",
+    "webpack-dev-server": "^3.11.1"
   }
 }
