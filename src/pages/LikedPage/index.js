@@ -7,19 +7,17 @@ import useStyles from "./styles";
 
 export const LikedFilms = () => {
   const classes = useStyles();
-  const [loading, setLoading] = useState(true);
   const [liked, setLiked] = useState([]);
 
-  useEffect(async () => {
+  useEffect(() => {
     setLiked(JSON.parse(localStorage.getItem("liked")));
-    setLoading(false);
-  }, [loading]);
+  }, []);
   return (
     <>
       <Navbar></Navbar>
       <Grid container className={classes.root}>
         <Grid item xs={12}>
-          {liked ? (
+          {liked.length > 0 ? (
             <Grid container justify="center">
               {liked.map((film) =>
                 film.id ? (

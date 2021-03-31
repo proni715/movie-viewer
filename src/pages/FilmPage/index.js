@@ -16,29 +16,21 @@ export const FilmPage = (props) => {
   const { id } = props.match.params;
   const [film, setFilm] = useState({});
   const [video, setVideo] = useState();
-  const [loading, setLoading] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
 
-  useEffect(async () => {
-    await axios
-      .get(Urls({ request: "film", param: id }))
-      .then((response) => {
-        setFilm(response.data);
-        setLoading(false);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+  useEffect(() => {
+    const query = async () => {
+      await axios
+        .get(Urls({ request: "film", param: id }))
+        .then((response) => {
+          setFilm(response.data);
+        })
+        .catch((e) => {});
+    };
+    query();
+  }, []);
 
-    await axios
-      .get(Urls({ request: "movieVideos", param: id }))
-      .then((response) => {
-        const videos = response.data.results;
-        setVideo("https://www.youtube.com/watch?v=" + videos[0].key);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+  useEffect(() => {
     const liked = JSON.parse(localStorage.getItem("liked"));
     if (liked && film) {
       for (let i = 0; i < liked.length; i++) {
@@ -48,7 +40,21 @@ export const FilmPage = (props) => {
         }
       }
     }
-  }, [loading]);
+  }, []);
+
+  useEffect(() => {
+    const query = async () => {
+      await axios
+        .get(Urls({ request: "movieVideos", param: id }))
+        .then((response) => {
+          const videos = response.data.results;
+          setVideo("https://www.youtube.com/watch?v=" + videos[0].key);
+        })
+        .catch((e) => {});
+    };
+    query();
+  }, []);
+
   const handleUnlike = () => {
     let liked = JSON.parse(localStorage.getItem("liked"));
     if (liked) {
@@ -62,6 +68,7 @@ export const FilmPage = (props) => {
       }
     }
   };
+
   const handleLike = () => {
     let liked = JSON.parse(localStorage.getItem("liked"));
     if (liked) {

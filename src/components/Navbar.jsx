@@ -14,8 +14,8 @@ import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   autocomplete: {
-    width: "20vw",
-    borderColor:'#424242',
+    width: "25vw",
+    borderColor: "#424242",
   },
   appBar: {
     position: "relative",
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   field: {
     margin: "0",
     backgroundColor: "white",
-    borderColor:'#424242',
+    borderColor: "#424242",
     borderRadius: "5px",
   },
 }));
@@ -91,7 +91,7 @@ export const Navbar = (props) => {
               <TextField
                 {...params}
                 label="Search"
-                // margin="normal"
+                margin="normal"
                 variant="outlined"
                 className={classes.field}
                 onChange={handleChange}

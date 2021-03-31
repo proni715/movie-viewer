@@ -31,22 +31,29 @@ const useStyles = makeStyles({
 
 export const FilmCard = ({ film, genres }) => {
   const classes = useStyles();
-  const [loading, setLoading] = useState(true);
+
   const [isLiked, setIsLiked] = useState(false);
   const [genresList, setGenres] = useState([]);
-  useEffect(async () => {
-    let finalGenres = new Array();
-    if (genres) {
-      for (let i = 0; i < genres.length; i++) {
-        for (let j = 0; j < film.genre_ids.length; j++) {
-          if (genres[i].id === film.genre_ids[j]) {
-            finalGenres.push(genres[i].name);
+
+  useEffect(() => {
+    const searchGenres = () => {
+      let finalGenres = [];
+      if (genres) {
+        for (let i = 0; i < genres.length; i++) {
+          for (let j = 0; j < film.genre_ids.length; j++) {
+            if (genres[i].id === film.genre_ids[j]) {
+              finalGenres.push(genres[i].name);
+            }
           }
         }
       }
-    }
-    setGenres(finalGenres);
-    const liked = await JSON.parse(localStorage.getItem("liked"));
+      setGenres(finalGenres);
+    };
+    searchGenres();
+  }, [film]);
+
+  useEffect(() => {
+    const liked = JSON.parse(localStorage.getItem("liked"));
     if (liked) {
       for (let i = 0; i < liked.length; i++) {
         if (liked[i].id === film.id) {
@@ -55,8 +62,7 @@ export const FilmCard = ({ film, genres }) => {
         }
       }
     }
-    setLoading(false);
-  }, [loading]);
+  }, [film]);
 
   const handleUnlike = () => {
     let liked = JSON.parse(localStorage.getItem("liked"));
@@ -113,18 +119,18 @@ export const FilmCard = ({ film, genres }) => {
       </CardActionArea>
       <CardActions>
         {isLiked ? (
-          <Button onClick={handleUnlike} size="small" color="#424242">
+          <Button onClick={handleUnlike} size="small" color="inherit">
             <Favorite></Favorite>
           </Button>
         ) : (
-          <Button onClick={handleLike} size="small" color="#424242">
+          <Button onClick={handleLike} size="small" color="inherit">
             <FavoriteBorder></FavoriteBorder>
           </Button>
         )}
         <Typography
           className={classes.description}
           variant="body2"
-          color="#424242"
+          color="inherit"
           component="p"
         >
           {genres ? genresList.map((genre) => genre + " ") : null}

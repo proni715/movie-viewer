@@ -26,18 +26,22 @@ export const FilmsList = ({ url, limit }) => {
     },
   }));
 
-  useEffect(async () => {
-    await axios
-      .get(
-        "https://api.themoviedb.org/3/genre/movie/list?api_key=339c5b0853bccc574e98f7edf445813d"
-      )
-      .then((response) => {
-        setGenres(response.data.genres);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-    if (fetching) {
+  useEffect(() => {
+    const query = async () => {
+      await axios
+        .get(
+          "https://api.themoviedb.org/3/genre/movie/list?api_key=339c5b0853bccc574e98f7edf445813d"
+        )
+        .then((response) => {
+          setGenres(response.data.genres);
+        })
+        .catch((e) => {});
+    };
+    query();
+  }, []);
+
+  useEffect(() => {
+    const query = async () => {
       await axios
         .get(url + "&page=" + currentPage)
         .then((response) => {
@@ -48,10 +52,12 @@ export const FilmsList = ({ url, limit }) => {
           console.log(e);
         })
         .finally(() => setFetching(false));
-    }
-    if (limit) {
-      setFilms(films.slice(0, 6));
-    }
+
+      if (limit) {
+        setFilms(films.slice(0, 6));
+      }
+    };
+    query();
   }, [fetching]);
 
   useEffect(() => {
@@ -70,6 +76,7 @@ export const FilmsList = ({ url, limit }) => {
       setFetching(true);
     }
   };
+
   const classes = useStyles();
   return (
     <Grid container className={classes.root}>
